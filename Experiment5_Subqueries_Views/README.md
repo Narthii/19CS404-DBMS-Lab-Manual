@@ -1,219 +1,218 @@
-# Experiment 5: Subqueries and Views
+# Experiment 6: Joins
 ## REG NO 212222060162
 ## AIM
-To study and implement subqueries and views.
+To study and implement different types of joins.
 
 ## THEORY
 
-### Subqueries
-A subquery is a query inside another SQL query and is embedded in:
-- WHERE clause
-- HAVING clause
-- FROM clause
+SQL Joins are used to combine records from two or more tables based on a related column.
 
-**Types:**
-- **Single-row subquery**:
-  Sub queries can also return more than one value. Such results should be made use along with the operators in and any.
-- **Multiple-row subquery**:
-  Here more than one subquery is used. These multiple sub queries are combined by means of ‘and’ & ‘or’ keywords.
-- **Correlated subquery**:
-  A subquery is evaluated once for the entire parent statement whereas a correlated Sub query is evaluated once per row processed by the parent statement.
+### 1. INNER JOIN
+Returns records with matching values in both tables.
 
-**Example:**
+**Syntax:**
 ```sql
-SELECT * FROM employees
-WHERE salary > (SELECT AVG(salary) FROM employees);
+SELECT columns
+FROM table1
+INNER JOIN table2
+ON table1.column = table2.column;
 ```
-### Views
-A view is a virtual table based on the result of an SQL SELECT query.
-**Create View:**
+
+### 2. LEFT JOIN
+Returns all records from the left table, and matched records from the right.
+
+**Syntax:**
+
 ```sql
-CREATE VIEW view_name AS
-SELECT column1, column2 FROM table_name WHERE condition;
+SELECT columns
+FROM table1
+LEFT JOIN table2
+ON table1.column = table2.column;
 ```
-**Drop View:**
+### 3. RIGHT JOIN
+Returns all records from the right table, and matched records from the left.
+
+**Syntax:**
+
 ```sql
-DROP VIEW view_name;
+SELECT columns
+FROM table1
+RIGHT JOIN table2
+ON table1.column = table2.column;
+```
+### 4. FULL OUTER JOIN
+Returns all records when there is a match in either left or right table.
+
+**Syntax:**
+
+```sql
+SELECT columns
+FROM table1
+FULL OUTER JOIN table2
+ON table1.column = table2.column;
 ```
 
 **Question 1**
 --
-![Screenshot (66)](https://github.com/user-attachments/assets/29fa55aa-d1c8-49a5-959e-80c0342caf45)
+![Screenshot (87)](https://github.com/user-attachments/assets/b1e0fd31-0362-4c95-8fcb-bf1c5db41a73)
+
 
 ```sql
-SELECT grade ,COUNT(*) 
-FROM customer
-GROUP BY grade
-HAVING grade >(SELECT AVG(grade)
-FROM customer
-WHERE city = 'New York');
-
+SELECT t.*
+FROM PATIENTS p
+INNER JOIN test_results t ON p.patient_id=t.patient_id
+WHERE p.first_name='Alice';
 ```
 
 **Output:**
 
-![Screenshot (67)](https://github.com/user-attachments/assets/5813663f-fa3a-4fc5-9039-700301eeaaf1)
+![Screenshot (88)](https://github.com/user-attachments/assets/56ddb082-c065-4628-b5d9-809c44d53c50)
 
 
 **Question 2**
 ---
-![Screenshot (69)](https://github.com/user-attachments/assets/9eb539a2-aebc-4c44-a14f-5dfdb6a14b59)
+![Screenshot (89)](https://github.com/user-attachments/assets/cfa028ef-7e73-4eda-990e-3639192ee817)
 
 
 ```sql
-SELECT department_id as depar, department_name
-FROM departments
-WHERE LENGTH(department_name) > (
-    SELECT AVG(LENGTH(department_name)) FROM departments
-);
-
+SELECT s.name AS Salesman,c.cust_name,c.city
+FROM salesman s
+JOIN customer c on s.city=c.city;
 ```
 
 **Output:**
 
-![Screenshot (70)](https://github.com/user-attachments/assets/bfe5d175-f2fc-4fdf-bb87-30848d366258)
+![Screenshot (90)](https://github.com/user-attachments/assets/89a669e4-75a5-47b7-ba37-2271aaec6e14)
 
 
 **Question 3**
 ---
-![Screenshot (71)](https://github.com/user-attachments/assets/b2bf6054-a136-45f8-a3c1-7252a309fb09)
+![Screenshot (91)](https://github.com/user-attachments/assets/5be98ed7-95d1-4e9a-b465-d42d9ef623be)
 
 
 ```sql
-SELECT * FROM GRADES g
-WHERE g.grade=(SELECT MAX(grade)
-               FROM GRADES
-              WHERE subject=g.subject);
+SELECT c.cust_name AS "Customer Name",c.city,s.name AS "Salesman",s.commission
+FROM customer c
+JOIN salesman s ON c.salesman_id=s.salesman_id;
 ```
 
 **Output:**
 
-![Screenshot (72)](https://github.com/user-attachments/assets/dfaec538-4a07-4a49-b8e7-82894ded4dba)
+![Screenshot (92)](https://github.com/user-attachments/assets/c5fac354-dea9-44ca-b91e-c6a928358d12)
 
 
 **Question 4**
 ---
-![Screenshot (73)](https://github.com/user-attachments/assets/965b7936-2f4a-4676-aa32-64147ea25336)
+![Screenshot (93)](https://github.com/user-attachments/assets/3e526a53-d6eb-4b0e-8e0e-73e93977ea3c)
+
 
 ```sql
-SELECT * FROM Employee
-WHERE age <(
-SELECT AVG(age)
-FROM Employee
-WHERE income>1000000);
+SELECT c.cust_name,c.city,c.grade,s.name AS "Salesman",s.city
+FROM customer c
+JOIN salesman s ON c.salesman_id=s.salesman_id
+ORDER BY c.customer_id ASC;
 ```
 
 **Output:**
 
-![Screenshot (74)](https://github.com/user-attachments/assets/fe483b8b-888a-43c5-9cb2-93aab75848ec)
-
+![Screenshot (94)](https://github.com/user-attachments/assets/cb335d4f-d838-47dc-823a-9ca901abd11f)
 
 **Question 5**
 ---
-![Screenshot (75)](https://github.com/user-attachments/assets/048069fb-110e-46f1-8283-a95492d3c87a)
+![Screenshot (95)](https://github.com/user-attachments/assets/7a6baa88-e726-42cb-95ae-c49a860afd67)
 
 
 ```sql
-SELECT * FROM CUSTOMERS
-WHERE ADDRESS ='Delhi';
+SELECT o.ord_no,o.purch_amt,c.cust_name,c.city
+FROM orders o
+JOIN customer c ON o.customer_id=c.customer_id
+WHERE o.purch_amt BETWEEN 500 and 2000;
 ```
 
 **Output:**
 
-![Screenshot (76)](https://github.com/user-attachments/assets/82e46355-f537-4eae-9b31-6253c511eb0c)
+![Screenshot (96)](https://github.com/user-attachments/assets/fefd25ae-ed20-471a-a13e-cc577b3c7df0)
+
 
 **Question 6**
 ---
-![Screenshot (77)](https://github.com/user-attachments/assets/a400ad7a-ec1d-438d-a770-b6698ebe610d)
+![Screenshot (97)](https://github.com/user-attachments/assets/f778fce1-5da5-479c-998a-302b0184a00f)
 
 
 ```sql
-SELECT o.ord_no,o.purch_amt,o.ord_date,o.customer_id,o.salesman_id
-FROM orders o
-JOIN salesman s ON o.salesman_id=s.salesman_id
-WHERE s.city = 'London';
+SELECT p.date_of_birth,a.appointment_id,p.patient_id,p.doctor_id,a.appointment_date
+FROM patients p
+INNER JOIN appointments a ON p.patient_id=a.patient_id
+WHERE p.first_name='Alice';
 ```
 
 **Output:**
 
-![Screenshot (78)](https://github.com/user-attachments/assets/7878da96-c5e9-46f9-9a08-1fc660c4db26)
+![Screenshot (98)](https://github.com/user-attachments/assets/02576a26-1387-4030-bf44-9c6afff062b0)
 
 
 **Question 7**
 ---
-![Screenshot (79)](https://github.com/user-attachments/assets/45f82d16-0d4a-4674-b511-560970075a23)
-
+![Screenshot (99)](https://github.com/user-attachments/assets/188c6aeb-666d-4a4d-9c57-00135af9c4df)
 
 ```sql
-SELECT s.salesman_id,s.name
-FROM salesman s
-JOIN customer c ON s.salesman_id=c.salesman_id
-GROUP BY s.salesman_id,s.name
-HAVING COUNT(c.customer_id)>1;
+SELECT p.first_name,s.surgery_id,p.patient_id,s.surgeon_id,s.surgery_date
+FROM patients p
+INNER JOIN surgeries s ON p.patient_id=s.patient_id
+WHERE p.date_of_birth >'1990-01-01';
 ```
 
 **Output:**
 
-![Screenshot (80)](https://github.com/user-attachments/assets/c5930c8d-f1e6-4e0c-8907-83cdc1723ceb)
-
+![Screenshot (100)](https://github.com/user-attachments/assets/b40f1f46-3f12-4094-8849-61ab44722eaa)
 
 **Question 8**
 ---
-![Screenshot (81)](https://github.com/user-attachments/assets/6ef1964b-14c5-4bfd-9233-faa4a7069c72)
+![Screenshot (101)](https://github.com/user-attachments/assets/e019a19d-fcfd-419a-8d6c-5bd1edf946bd)
+
 
 ```sql
-SELECT 
-    o.ord_no,
-    o.purch_amt,
-    o.ord_date,
-    o.salesman_id
-FROM orders o
-JOIN salesman s ON o.salesman_id = s.salesman_id
-WHERE s.commission = (
-    SELECT MAX(commission) FROM salesman
-);
-
+SELECT c.cust_name FROM customer c
+LEFT JOIN orders o ON c.customer_id=o.customer_id;
 ```
 
 **Output:**
 
-![Screenshot (82)](https://github.com/user-attachments/assets/fc5fa268-39f8-4b6c-a2eb-9aa744b70ca9)
+![Screenshot (102)](https://github.com/user-attachments/assets/df4350b2-b8b0-411c-b5fd-00dd93b118a4)
 
 
 **Question 9**
 ---
-![Screenshot (83)](https://github.com/user-attachments/assets/9283812d-c83e-419e-9ee4-1906e56a065c)
+![Screenshot (103)](https://github.com/user-attachments/assets/af16e9c7-602b-4fc3-bed9-2d6d05882740)
+
 
 ```sql
-SELECT * FROM CUSTOMERS
-WHERE AGE < 30;
+SELECT c.* FROM customer c
+LEFT JOIN orders o ON c.customer_id=o.customer_id
+WHERE o.ord_date BETWEEN '2012-07-01' AND '2012-07-30';
 ```
 
 **Output:**
 
-![Screenshot (84)](https://github.com/user-attachments/assets/dbadad47-ee94-44c3-8b1e-e73b876c3ae9)
-
+![Screenshot (104)](https://github.com/user-attachments/assets/52fd6065-8d3a-42f0-a223-10d6a0df109a)
 
 **Question 10**
 ---
-![Screenshot (85)](https://github.com/user-attachments/assets/1b2f0484-4ba1-4bb4-8024-41cdc09c189a)
-
+![Screenshot (105)](https://github.com/user-attachments/assets/4fc010a7-9ce1-454b-a49f-44acf0795cda)
 
 ```sql
-SELECT customer_id,cust_name,city,grade,salesman_id
-FROM customer
-WHERE customer_id = (SELECT salesman_id -2001
-FROM salesman
-WHERE name = 'Mc Lyon')
+SELECT c.cust_name FROM customer c
+LEFT JOIN orders o ON c.customer_id=o.customer_id
+WHERE o.purch_amt<100;
 ```
 
 **Output:**
 
-![Screenshot (86)](https://github.com/user-attachments/assets/df2e634f-8e73-49f5-bb19-75ac57790474)
+![Screenshot (106)](https://github.com/user-attachments/assets/09afbbdd-4bbe-4306-98cc-aba32ca9e4d6)
 
 ## SEB GRADE
-![Screenshot (113)](https://github.com/user-attachments/assets/4e661671-ba99-4327-be5d-ee306b24124e)
+![Screenshot (113)](https://github.com/user-attachments/assets/3f4a6c15-3f14-4802-8053-961e56488a38)
 
 
 ## RESULT
-Thus, the SQL queries to implement subqueries and views have been executed successfully.
+Thus, the SQL queries to implement different types of joins have been executed successfully.
